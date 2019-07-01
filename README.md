@@ -6,7 +6,7 @@ A vanilla javascript game where you play against the computer to collect the mos
 
 Flipmaster is a fresh take on the classic game in which balls fall under the influence of gravity and are directed left or right by a series of levers.
 
-In this take on the game, the player and computer alternate flipping levers to get more balls falling into their bin. The play will have a limited time in which to make a move, and if they don't move within that time, they lost their turn. Additionally, the whole mechanism will be rotating back and forth, making it harder to predict ball movement.
+In this take on the game, the player and computer alternate flipping levers to get more balls falling into their bin. The play will have a limited time in which to make a move, and if they don't move within that time, they lose their turn. Additionally, the whole mechanism will be rotating back and forth, making it harder to predict ball movement.
 
 ## Functionality & MVP
 
