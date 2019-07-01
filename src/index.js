@@ -2,5 +2,5 @@ window.addEventListener('DOMContentLoaded', event => {
   const canvas = document.getElementById('canvas')
   const c = canvas.getContext('2d')
   c.fillStyle = 'red'
-  c.fillRect(100, 100, 400, 300)
+  c.fillRect(0, 0, 800, 800)
 })
