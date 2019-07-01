@@ -1,0 +1,27 @@
+{
+  "name": "flipmaster",
+  "version": "1.0.0",
+  "description": "A vanilla javascript skills-based ball game",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "webpack": "^4.35.2",
+    "webpack-cli": "^3.3.5",
+    "webpack-dev-server": "^3.7.2"
+  },
+  "scripts": {
+    "build": "webpack",
+    "watch": "webpack --watch",
+    "start": "webpack-dev-server --open"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/richierob62/flipmaster.git"
+  },
+  "author": "Richard Robinson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/richierob62/flipmaster/issues"
+  },
+  "homepage": "https://github.com/richierob62/flipmaster#readme"
+}
