@@ -1,0 +1,44 @@
+{"frames": {
+
+"bar.png":
+{
+	"frame": {"x":0,"y":0,"w":14,"h":100},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":14,"h":100},
+	"sourceSize": {"w":14,"h":100}
+},
+"basket.png":
+{
+	"frame": {"x":14,"y":0,"w":290,"h":91},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":290,"h":91},
+	"sourceSize": {"w":290,"h":91}
+},
+"lever.png":
+{
+	"frame": {"x":304,"y":0,"w":100,"h":15},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":100,"h":15},
+	"sourceSize": {"w":100,"h":15}
+},
+"sphere.png":
+{
+	"frame": {"x":404,"y":0,"w":20,"h":20},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":20,"h":20},
+	"sourceSize": {"w":20,"h":20}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "flipmaster_spritesheet.png",
+	"format": "RGBA8888",
+	"size": {"w":424,"h":100},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:4b5b8a3dc78666015086fbda2f05f98c:58835ba32090a18f1a3eb630b386d714:5c34838c4c494388315f5f49fae7cf4c$"
+}
+}

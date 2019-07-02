@@ -1,0 +1,24 @@
+Ball
+Timer
+Lever
+Frame
+Player
+Controller
+Display
+Game
+Engine
+
+///////////
+
+context.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh)
+
+img	Source image object	Sprite sheet
+sx	Source x	Frame index times frame width
+sy	Source y	0
+sw	Source width	Frame width
+sh	Source height	Frame height
+dx	Destination x	0
+dy	Destination y	0
+dw	Destination width	Frame width
+dh	Destination height	Frame height
+
