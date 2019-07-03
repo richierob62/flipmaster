@@ -2,7 +2,7 @@
 
 "bar.png":
 {
-	"frame": {"x":0,"y":0,"w":14,"h":100},
+	"frame": {"x":290,"y":82,"w":14,"h":100},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":14,"h":100},
@@ -10,7 +10,7 @@
 },
 "basket.png":
 {
-	"frame": {"x":14,"y":0,"w":290,"h":91},
+	"frame": {"x":0,"y":82,"w":290,"h":91},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":290,"h":91},
@@ -18,15 +18,31 @@
 },
 "lever.png":
 {
-	"frame": {"x":304,"y":0,"w":100,"h":15},
+	"frame": {"x":0,"y":0,"w":100,"h":15},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":100,"h":15},
 	"sourceSize": {"w":100,"h":15}
 },
+"lever_45.png":
+{
+	"frame": {"x":196,"y":0,"w":82,"h":82},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":82,"h":82},
+	"sourceSize": {"w":82,"h":82}
+},
+"lever_neg45.png":
+{
+	"frame": {"x":120,"y":0,"w":76,"h":76},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":76,"h":76},
+	"sourceSize": {"w":76,"h":76}
+},
 "sphere.png":
 {
-	"frame": {"x":404,"y":0,"w":20,"h":20},
+	"frame": {"x":100,"y":0,"w":20,"h":20},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":20,"h":20},
@@ -37,8 +53,8 @@
 	"version": "1.0",
 	"image": "flipmaster_spritesheet.png",
 	"format": "RGBA8888",
-	"size": {"w":424,"h":100},
+	"size": {"w":304,"h":182},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:4b5b8a3dc78666015086fbda2f05f98c:58835ba32090a18f1a3eb630b386d714:5c34838c4c494388315f5f49fae7cf4c$"
+	"smartupdate": "$TexturePacker:SmartUpdate:4633694c579f10bc3d8431f396bf8bd0:cae384c697ae57fee6bda6521b5bada5:5c34838c4c494388315f5f49fae7cf4c$"
 }
 }

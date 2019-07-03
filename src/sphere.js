@@ -13,7 +13,7 @@ class Sphere {
     this.img = new Image()
     this.img.src = './assets/flipmaster_spritesheet.png'
 
-    this.spriteCoordinates = [404, 0, 20, 20]
+    this.spriteCoordinates = [100, 0, 20, 20]
     this.size = [20, 20]
 
     this.tick = this.tick.bind(this)

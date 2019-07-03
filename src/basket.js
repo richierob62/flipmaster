@@ -9,7 +9,7 @@ class Basket {
     this.img = new Image()
     this.img.src = './assets/flipmaster_spritesheet.png'
 
-    this.spriteCoordinates = [14, 0, 290, 91]
+    this.spriteCoordinates = [0, 82, 290, 91]
     this.size = [290, 91]
 
     this.game.addAsset(this)
