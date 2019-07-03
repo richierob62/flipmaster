@@ -8,17 +8,18 @@ class Game {
   constructor(canvas) {
     this.canvas = canvas
     this.ctx = canvas.getContext('2d')
-    this.gameAssets = []
+
+    this.gameAssets = {}
+    this.lowerLeft = {}
+    this.lowerRight = {}
+    this.upperLeft = {}
+    this.upperRight = {}
+
     this.update = this.update.bind(this)
     this.clearCanvas = this.clearCanvas.bind(this)
 
     this.addAsset = this.addAsset.bind(this)
     this.addBall = this.addBall.bind(this)
-
-    this.lowerLeft = []
-    this.lowerRight = []
-    this.upperLeft = []
-    this.upperRight = []
 
     this.buildLeftWall()
     this.buildRightWall()
@@ -28,6 +29,7 @@ class Game {
 
     window.requestAnimationFrame(this.update)
 
+    this.addBall()
     window.setInterval(this.addBall, Constants.INTERVAL_BETWEEN_SPHERES)
   }
 
@@ -39,30 +41,32 @@ class Game {
 
   update() {
     this.clearCanvas()
-    this.gameAssets.forEach(asset => asset.update(this.ctx))
+
+    Object.values(this.gameAssets).forEach(asset => asset.update(this.ctx))
     window.requestAnimationFrame(this.update)
   }
 
   addAsset(asset) {
-    this.gameAssets.push(asset)
+    this.gameAssets[asset.id] = asset
     if (asset.type !== 'sphere') {
-      if (asset.pos[0] < 300 && asset.pos[1] >= 300) {
-        this.lowerLeft.push(asset)
-      } else if (asset.pos[0] >= 300 && asset.pos[1] >= 300) {
-        this.lowerRight.push(asset)
-      } else if (asset.pos[0] < 300 && asset.pos[1] < 300) {
-        this.upperLeft.push(asset)
+      if (asset.pos[0] <= 300 && asset.pos[1] >= 300) {
+        this.lowerLeft[asset.id] = asset
+      } else if (asset.pos[0] > 300 && asset.pos[1] >= 300) {
+        this.lowerRight[asset.id] = asset
+      } else if (asset.pos[0] <= 300 && asset.pos[1] < 300) {
+        this.upperLeft[asset.id] = asset
       } else {
-        this.upperRight.push(asset)
+        this.upperRight[asset.id] = asset
       }
     }
   }
 
   delete(asset) {
-    const idx = this.gameAssets.indexOf(asset)
-    this.gameAssets = this.gameAssets
-      .slice(0, idx)
-      .concat(this.gameAssets.slice(idx + 1))
+    delete this.gameAssets[asset.id]
+    delete this.lowerLeft[asset.id]
+    delete this.lowerRight[asset.id]
+    delete this.upperLeft[asset.id]
+    delete this.upperRight[asset.id]
   }
 
   addBall() {

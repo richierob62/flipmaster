@@ -1,7 +1,10 @@
+import { randomId } from './utils'
+
 class Lever {
   constructor(game, pos, rotation) {
     this.type = 'lever'
 
+    this.id = randomId()
     this.game = game
     this.pos = pos
     this.rotation = rotation

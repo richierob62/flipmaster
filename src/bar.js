@@ -1,6 +1,10 @@
+import { randomId } from './utils'
+
 class Bar {
   constructor(game, pos, activeSide) {
     this.type = 'bar'
+
+    this.id = randomId()
 
     this.game = game
     this.pos = pos
