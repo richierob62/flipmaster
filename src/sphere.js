@@ -1,7 +1,7 @@
-/* eslint-disable operator-assignment */
-import { incrementVector, randomId } from './utils'
-
 import Constants from './constants'
+import Vector from './vector'
+/* eslint-disable operator-assignment */
+import { randomId } from './utils'
 
 class Sphere {
   constructor(game, pos, vel) {
@@ -13,12 +13,12 @@ class Sphere {
     this.game = game
     this.pos = pos
     this.vel = vel
-    this.gravity = [0, Constants.GRAVITY]
+    this.gravity = new Vector(0, Constants.GRAVITY)
 
     this.img = new Image()
     this.img.src = './assets/flipmaster_spritesheet.png'
 
-    this.spriteCoordinates = [100, 0, 20, 20]
+    this.spriteCoordinates = [0, 0, 20, 20]
     this.size = [20, 20]
 
     this.tick = this.tick.bind(this)
@@ -40,15 +40,20 @@ class Sphere {
     ctx.drawImage(
       this.img,
       ...this.spriteCoordinates,
-      ...this.pos,
+      this.pos.x(),
+      this.pos.y(),
       ...this.size
     )
   }
 
   tick() {
-    this.removeFromQuadrant()
+    if (this.vel.mag() < 0.2)
+      this.applyForce(
+        new Vector(-4 + Math.random() * 4, -4 + Math.random() * 4)
+      )
+    // this.removeFromQuadrant()
     this.updateVectors()
-    this.updateQuadrant()
+    // this.updateQuadrant()
     this.checkForCollisions()
     this.cleanup()
   }
@@ -59,11 +64,11 @@ class Sphere {
   }
 
   updateQuadrant() {
-    if (this.pos[0] <= 300 && this.pos[1] >= 300) {
+    if (this.pos.x() <= 400 && this.pos.y() >= 400) {
       this.quadrant = this.game.lowerLeft
-    } else if (this.pos[0] > 300 && this.pos[1] >= 300) {
+    } else if (this.pos.x() > 400 && this.pos.y() >= 400) {
       this.quadrant = this.game.lowerRight
-    } else if (this.pos[0] <= 300 && this.pos[1] < 300) {
+    } else if (this.pos.x() <= 400 && this.pos.y() < 400) {
       this.quadrant = this.game.upperLeft
     } else {
       this.quadrant = this.game.upperRight
@@ -72,12 +77,12 @@ class Sphere {
   }
 
   updateVectors() {
-    this.pos = incrementVector(this.pos, this.vel)
-    this.vel = incrementVector(this.vel, this.gravity)
     if (this.force) {
-      this.vel = incrementVector(this.vel, this.force)
+      this.vel = this.vel.add(this.force)
       this.force = null
     }
+    this.vel = this.vel.add(this.gravity)
+    this.pos = this.pos.add(this.vel)
   }
 
   applyForce(force) {
@@ -92,16 +97,16 @@ class Sphere {
 
   outOfBounds() {
     return (
-      this.pos[0] < 0 ||
-      this.pos[0] > 800 ||
-      this.pos[1] < -1000 ||
-      this.pos[1] > 1000
+      this.pos.x() < 0 ||
+      this.pos.x() > 800 ||
+      this.pos.y() < -1000 ||
+      this.pos.y() > 1000
     )
   }
 
   checkForCollisions() {
-    if (!this.quadrant) return
-    Object.values(this.quadrant).forEach(asset => {
+    // if (!this.quadrant) return
+    Object.values(this.game.gameAssets).forEach(asset => {
       if (asset.id !== this.id) {
         this.assessCollisionProspects(this, asset)
       }
@@ -109,13 +114,16 @@ class Sphere {
   }
 
   assessCollisionProspects(sphere, b) {
-    const sphere_ul_x = sphere.pos[0]
-    const sphere_ul_y = sphere.pos[1]
+    if (b.type === 'sphere') {
+      return
+    }
+    const sphere_ul_x = sphere.pos.x()
+    const sphere_ul_y = sphere.pos.y()
     const sphere_lr_x = sphere_ul_x + sphere.size[0]
     const sphere_lr_y = sphere_ul_y + sphere.size[1]
 
-    const b_ul_x = b.pos[0]
-    const b_ul_y = b.pos[1]
+    const b_ul_x = b.pos.x()
+    const b_ul_y = b.pos.y()
     const b_lr_x = b_ul_x + b.size[0]
     const b_lr_y = b_ul_y + b.size[1]
 
@@ -149,11 +157,11 @@ class Sphere {
       overlap_lr_x - overlap_ul_x,
       overlap_lr_y - overlap_ul_y
     )
-
     cloneContext.drawImage(
       this.img,
       ...this.spriteCoordinates,
-      ...this.pos,
+      this.pos.x(),
+      this.pos.y(),
       ...this.size
     )
 
@@ -171,7 +179,13 @@ class Sphere {
       overlap_lr_y - overlap_ul_y
     )
 
-    cloneContext.drawImage(b.img, ...b.spriteCoordinates, ...b.pos, ...b.size)
+    cloneContext.drawImage(
+      b.img,
+      ...b.spriteCoordinates,
+      b.pos.x(),
+      b.pos.y(),
+      ...b.size
+    )
 
     const bImageData = cloneContext.getImageData(
       overlap_ul_x,
@@ -187,37 +201,16 @@ class Sphere {
       index += resolution
     ) {
       if (sphereImageData.data[index + 3] && bImageData.data[index + 3]) {
-        if (b.type === 'lever' && b.rotation === 45) {
-          const y_portion_of_y = sphere.vel[1] * Math.cos(Math.PI / 4) ** 2
-          const x_portion_of_y =
-            sphere.vel[1] * Math.sin(Math.PI / 4) * Math.cos(Math.PI / 4)
-          const x_portion_of_x = sphere.vel[0]
-          const y_portion_of_x =
-            (sphere.vel[0] * Math.cos(Math.PI / 4)) / Math.sin(Math.PI / 4)
-          sphere.vel[0] = sphere.vel[0] - x_portion_of_y - x_portion_of_x
-          sphere.vel[1] = sphere.vel[1] - y_portion_of_y - y_portion_of_x
-        }
-        if (b.type === 'lever' && b.rotation === -45) {
-          const y_portion_of_y =
-            sphere.vel[1] * Math.cos((3 * Math.PI) / 4) ** 2
-          const x_portion_of_y =
-            sphere.vel[1] *
-            Math.sin((3 * Math.PI) / 4) *
-            Math.cos((3 * Math.PI) / 4)
-          const x_portion_of_x = sphere.vel[0]
-          const y_portion_of_x =
-            (sphere.vel[0] * Math.cos((3 * Math.PI) / 4)) /
-            Math.sin((3 * Math.PI) / 4)
-          sphere.vel[0] = sphere.vel[0] - x_portion_of_y - x_portion_of_x
-          sphere.vel[1] = sphere.vel[1] - y_portion_of_y - y_portion_of_x
-        }
-        if (b.type === 'lever' && b.rotation === 0) {
-          sphere.vel[1] = -Math.max(Math.abs(sphere.vel[1]), 2)
-        }
-        if (b.type === 'bar') {
-          sphere.vel[0] = -sphere.vel[0]
-        }
-        if (b.type === 'basket') {
+        if (b.type !== 'basket') {
+          if (b.type === 'lever') sphere.vel = sphere.vel.multiply(0.95)
+
+          const surfaceNormal =
+            b.type !== 'sphere' ? b.vector.normal() : b.vel.normal()
+          const dotProduct = sphere.vel.dotProduct(surfaceNormal)
+          const bounceVector = surfaceNormal.multiply(-2 * dotProduct)
+          sphere.vel = sphere.vel.add(bounceVector)
+          break
+        } else {
           b.spheres[sphere.id] = sphere.id
           sphere.game.delete(sphere)
         }

@@ -1,3 +1,4 @@
+import Vector from './vector'
 import { randomId } from './utils'
 
 class Bar {
@@ -10,11 +11,17 @@ class Bar {
     this.pos = pos
     this.activeSide = activeSide
 
+    if (activeSide === 'right') {
+      this.vector = new Vector(0, 1)
+    } else {
+      this.vector = new Vector(0, -1)
+    }
+
     this.img = new Image()
     this.img.src = './assets/flipmaster_spritesheet.png'
 
-    this.spriteCoordinates = [290, 82, 14, 100]
-    this.size = [14, 100]
+    this.spriteCoordinates = [290, 79, 23, 100]
+    this.size = [23, 100]
 
     this.game.addAsset(this)
 
@@ -29,7 +36,8 @@ class Bar {
     ctx.drawImage(
       this.img,
       ...this.spriteCoordinates,
-      ...this.pos,
+      this.pos.x(),
+      this.pos.y(),
       ...this.size
     )
   }

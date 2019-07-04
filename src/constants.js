@@ -1,6 +1,6 @@
 const GRAVITY = 0.05
 const INTERVAL_BETWEEN_SPHERES = 1500
-const PIXEL_CHECK = 1
+const PIXEL_CHECK = 5
 
 export default {
   GRAVITY,
