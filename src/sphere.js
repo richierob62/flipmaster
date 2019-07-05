@@ -2,6 +2,7 @@ import Constants from './constants'
 import Vector from './vector'
 /* eslint-disable operator-assignment */
 import { randomId } from './utils'
+import spriteMeta from '../public/assets/flipmaster_spritesheet'
 
 class Sphere {
   constructor(game, pos, vel) {
@@ -18,8 +19,9 @@ class Sphere {
     this.img = new Image()
     this.img.src = './assets/flipmaster_spritesheet.png'
 
-    this.spriteCoordinates = [0, 0, 20, 20]
-    this.size = [20, 20]
+    const { x, y, w, h } = spriteMeta['sphere.png'].frame
+    this.spriteCoordinates = [x, y, w, h]
+    this.size = [w, h]
 
     this.tick = this.tick.bind(this)
     this.draw = this.draw.bind(this)
@@ -47,10 +49,10 @@ class Sphere {
   }
 
   tick() {
-    if (this.vel.mag() < 0.2)
-      this.applyForce(
-        new Vector(-4 + Math.random() * 4, -4 + Math.random() * 4)
-      )
+    // if (this.vel.mag() < 0.2)
+    //   this.applyForce(
+    //     new Vector(-4 + Math.random() * 4, -4 + Math.random() * 4)
+    //   )
     // this.removeFromQuadrant()
     this.updateVectors()
     // this.updateQuadrant()
@@ -114,7 +116,7 @@ class Sphere {
   }
 
   assessCollisionProspects(sphere, b) {
-    if (b.type === 'sphere') {
+    if (['timer', 'start_btn', 'game_header', 'winner'].indexOf(b.type) >= 0) {
       return
     }
     const sphere_ul_x = sphere.pos.x()
@@ -202,7 +204,7 @@ class Sphere {
     ) {
       if (sphereImageData.data[index + 3] && bImageData.data[index + 3]) {
         if (b.type !== 'basket') {
-          if (b.type === 'lever') sphere.vel = sphere.vel.multiply(0.95)
+          if (b.type === 'lever') sphere.vel = sphere.vel.multiply(0.93)
 
           const surfaceNormal =
             b.type !== 'sphere' ? b.vector.normal() : b.vel.normal()

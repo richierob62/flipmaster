@@ -1,30 +1,24 @@
-import Vector from './vector'
+/* eslint-disable one-var */
+/* eslint-disable class-methods-use-this */
 import { randomId } from './utils'
 import spriteMeta from '../public/assets/flipmaster_spritesheet'
 
-class Bar {
-  constructor(game, pos, activeSide) {
-    this.type = 'bar'
+class GameHeader {
+  constructor(game, pos) {
+    this.type = 'game_header'
 
     this.id = randomId()
 
     this.game = game
     this.pos = pos
-    this.activeSide = activeSide
-
-    if (activeSide === 'right') {
-      this.vector = new Vector(0, 1)
-    } else {
-      this.vector = new Vector(0, -1)
-    }
 
     this.img = new Image()
     this.img.src = './assets/flipmaster_spritesheet.png'
 
-    const { x, y, w, h } = spriteMeta['bar.png'].frame
+    const { x, y, w, h } = spriteMeta['game_header.png'].frame
 
     this.spriteCoordinates = [x, y, w, h]
-    this.size = [w, h]
+    this.size = [w / 2, h / 2]
 
     this.draw = this.draw.bind(this)
   }
@@ -42,10 +36,6 @@ class Bar {
       ...this.size
     )
   }
-
-  slide(slide) {
-    this.pos.value[0] += slide
-  }
 }
 
-export default Bar
+export default GameHeader

@@ -1,5 +1,6 @@
 import Vector from './vector'
 import { randomId } from './utils'
+import spriteMeta from '../public/assets/flipmaster_spritesheet'
 
 class Lever {
   constructor(game, pos, rotation) {
@@ -7,38 +8,43 @@ class Lever {
 
     this.id = randomId()
     this.game = game
-    this.placedPosition = new Vector(pos.x(), pos.y())
+    this.originalY = pos.value[1]
     this.pos = pos
     this.rotation = rotation
 
-    this.pos45Adjustment = -38
-    this.posNeg45Adjustment = -28
+    this.diagonalAdjustment = -25
 
     this.img = new Image()
     this.img.src = './assets/flipmaster_spritesheet.png'
     if (rotation === 45) {
-      this.spriteCoordinates = [199, 0, 79, 79]
-      this.size = [82, 82]
-      this.pos.value[1] += this.pos45Adjustment
+      const { x, y, w, h } = spriteMeta['lever_2.png'].frame
+      this.spriteCoordinates = [x, y, w, h]
+      this.size = [w, h]
+      this.pos.value[1] += this.diagonalAdjustment
       this.vector = new Vector(1, -1)
     } else if (rotation === -45) {
-      this.spriteCoordinates = [120, 0, 79, 79]
-      this.size = [79, 79]
-      this.pos.value[1] += this.posNeg45Adjustment
+      const { x, y, w, h } = spriteMeta['lever_neg45.png'].frame
+      this.spriteCoordinates = [x, y, w, h]
+      this.size = [w, h]
+      this.pos.value[1] += this.diagonalAdjustment
       this.vector = new Vector(1, 1)
     } else {
-      this.spriteCoordinates = [20, 0, 100, 22]
-      this.size = [100, 22]
+      const { x, y, w, h } = spriteMeta['lever_2.png'].frame
+      this.spriteCoordinates = [x, y, w, h]
+      this.size = [w, h]
       this.vector = new Vector(1, 0)
     }
 
     this.draw = this.draw.bind(this)
     this.handleClick = this.handleClick.bind(this)
-
-    window.addEventListener('click', this.handleClick)
   }
 
   update(ctx) {
+    if (this.game.currentPlayer !== 'computer') {
+      window.addEventListener('click', this.handleClick)
+    } else {
+      window.removeEventListener('click', this.handleClick)
+    }
     this.draw(ctx)
   }
 
@@ -65,23 +71,50 @@ class Lever {
 
     if (bbox_ul_x <= x && bbox_lr_x >= x && bbox_ul_y <= y && bbox_lr_y >= y) {
       if (this.rotation !== 0) {
-        this.spriteCoordinates = [20, 0, 100, 22]
-        this.size = [100, 22]
-        this.pos = this.placedPosition
+        const { x, y, w, h } = spriteMeta['lever_2.png'].frame
+        this.spriteCoordinates = [x, y, w, h]
+        this.size = [w, h]
+        this.pos.value[1] = this.originalY
         this.vector = new Vector(1, 0)
+        this.rotation = 0
+      } else if (x > bbox_ul_x + this.size[0] / 2) {
+        const { x, y, w, h } = spriteMeta['lever_45.png'].frame
+        this.spriteCoordinates = [x, y, w, h]
+        this.size = [w, h]
+        this.pos.value[1] = this.originalY + this.diagonalAdjustment
+        this.vector = new Vector(1, -1)
+        this.rotation = 45
       } else {
-        console.log(`x: ${x} y: ${y}`)
-        console.log(this.pos.value)
-        if (x > bbox_ul_x + this.size[0] / 2) {
-          console.log('right side')
-          // right 0
-          // right 45
-          // right -45
-        } else {
-          console.log('left side')
-        }
+        const { x, y, w, h } = spriteMeta['lever_neg45.png'].frame
+        this.spriteCoordinates = [x, y, w, h]
+        this.size = [w, h]
+        this.pos.value[1] = this.originalY + this.diagonalAdjustment
+        this.vector = new Vector(1, 1)
+        this.rotation = -45
       }
     }
+  }
+
+  slide(slide) {
+    this.pos.value[0] += slide
+  }
+
+  flipTo45() {
+    const { x, y, w, h } = spriteMeta['lever_45.png'].frame
+    this.spriteCoordinates = [x, y, w, h]
+    this.size = [w, h]
+    this.pos.value[1] = this.originalY + this.diagonalAdjustment
+    this.vector = new Vector(1, -1)
+    this.rotation = 45
+  }
+
+  flipToFlat() {
+    const { x, y, w, h } = spriteMeta['lever_2.png'].frame
+    this.spriteCoordinates = [x, y, w, h]
+    this.size = [w, h]
+    this.pos.value[1] = this.originalY
+    this.rotation = 0
+    this.vector = new Vector(1, 0)
   }
 }
 

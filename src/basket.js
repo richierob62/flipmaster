@@ -1,6 +1,7 @@
 /* eslint-disable one-var */
 /* eslint-disable class-methods-use-this */
 import { randomId } from './utils'
+import spriteMeta from '../public/assets/flipmaster_spritesheet'
 
 class Basket {
   constructor(game, pos, side) {
@@ -16,10 +17,10 @@ class Basket {
     this.img = new Image()
     this.img.src = './assets/flipmaster_spritesheet.png'
 
-    this.spriteCoordinates = [0, 79, 290, 91]
-    this.size = [290, 91]
+    const { x, y, w, h } = spriteMeta['basket.png'].frame
 
-    this.game.addAsset(this)
+    this.spriteCoordinates = [x, y, w, h]
+    this.size = [w, h]
 
     this.draw = this.draw.bind(this)
   }
