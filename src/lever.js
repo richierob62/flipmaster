@@ -1,3 +1,4 @@
+import Constants from './constants'
 import Vector from './vector'
 import { randomId } from './utils'
 import spriteMeta from '../public/assets/flipmaster_spritesheet'
@@ -59,6 +60,8 @@ class Lever {
   }
 
   handleClick(e) {
+    if (this.game.clickInProgress) return
+
     e.stopPropagation()
     const bbox_ul_x = this.pos.x()
     const bbox_ul_y = this.pos.y()
@@ -70,6 +73,14 @@ class Lever {
     const y = e.clientY - rect.top
 
     if (bbox_ul_x <= x && bbox_lr_x >= x && bbox_ul_y <= y && bbox_lr_y >= y) {
+      // this lever
+
+      if (this.game.leversChanged > Constants.NUMBER_CHANGED_BY_HUMAN) return
+
+      this.game.leversChanged += 1
+      this.game.clickInProgress = this.id
+      console.log(this.game.leversChanged)
+
       if (this.rotation !== 0) {
         const { x, y, w, h } = spriteMeta['lever_2.png'].frame
         this.spriteCoordinates = [x, y, w, h]
@@ -78,20 +89,23 @@ class Lever {
         this.vector = new Vector(1, 0)
         this.rotation = 0
       } else if (x > bbox_ul_x + this.size[0] / 2) {
-        const { x, y, w, h } = spriteMeta['lever_45.png'].frame
-        this.spriteCoordinates = [x, y, w, h]
-        this.size = [w, h]
-        this.pos.value[1] = this.originalY + this.diagonalAdjustment
-        this.vector = new Vector(1, -1)
-        this.rotation = 45
-      } else {
         const { x, y, w, h } = spriteMeta['lever_neg45.png'].frame
         this.spriteCoordinates = [x, y, w, h]
         this.size = [w, h]
         this.pos.value[1] = this.originalY + this.diagonalAdjustment
         this.vector = new Vector(1, 1)
         this.rotation = -45
+      } else {
+        const { x, y, w, h } = spriteMeta['lever_45.png'].frame
+        this.spriteCoordinates = [x, y, w, h]
+        this.size = [w, h]
+        this.pos.value[1] = this.originalY + this.diagonalAdjustment
+        this.vector = new Vector(1, -1)
+        this.rotation = 45
       }
+
+      this.game.flip.play()
+      this.game.clickInProgress = null
     }
   }
 
@@ -106,6 +120,7 @@ class Lever {
     this.pos.value[1] = this.originalY + this.diagonalAdjustment
     this.vector = new Vector(1, -1)
     this.rotation = 45
+    this.game.computerFlip.play()
   }
 
   flipToFlat() {
@@ -115,6 +130,7 @@ class Lever {
     this.pos.value[1] = this.originalY
     this.rotation = 0
     this.vector = new Vector(1, 0)
+    this.game.computerFlip.play()
   }
 }
 

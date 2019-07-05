@@ -1,6 +1,7 @@
-import Constants from './constants'
-import Vector from './vector'
 /* eslint-disable operator-assignment */
+import Constants from './constants'
+import Sound from './sound'
+import Vector from './vector'
 import { randomId } from './utils'
 import spriteMeta from '../public/assets/flipmaster_spritesheet'
 
@@ -15,6 +16,9 @@ class Sphere {
     this.pos = pos
     this.vel = vel
     this.gravity = new Vector(0, Constants.GRAVITY)
+    this.stuck = false
+
+    this.bounceCheck = null
 
     this.img = new Image()
     this.img.src = './assets/flipmaster_spritesheet.png'
@@ -49,13 +53,7 @@ class Sphere {
   }
 
   tick() {
-    // if (this.vel.mag() < 0.2)
-    //   this.applyForce(
-    //     new Vector(-4 + Math.random() * 4, -4 + Math.random() * 4)
-    //   )
-    // this.removeFromQuadrant()
     this.updateVectors()
-    // this.updateQuadrant()
     this.checkForCollisions()
     this.cleanup()
   }
@@ -87,6 +85,21 @@ class Sphere {
     this.pos = this.pos.add(this.vel)
   }
 
+  fakeMove() {
+    const fakeData = {
+      pos: new Vector(this.pos.x(), this.pos.y()),
+      vel: new Vector(this.vel.x(), this.vel.y())
+    }
+
+    if (this.force) {
+      fakeData.vel = fakeData.vel.add(this.force)
+    }
+    fakeData.vel = fakeData.vel.add(this.gravity)
+    fakeData.pos = fakeData.pos.add(fakeData.vel)
+
+    return fakeData
+  }
+
   applyForce(force) {
     this.force = force
   }
@@ -107,7 +120,6 @@ class Sphere {
   }
 
   checkForCollisions() {
-    // if (!this.quadrant) return
     Object.values(this.game.gameAssets).forEach(asset => {
       if (asset.id !== this.id) {
         this.assessCollisionProspects(this, asset)
@@ -119,6 +131,9 @@ class Sphere {
     if (['timer', 'start_btn', 'game_header', 'winner'].indexOf(b.type) >= 0) {
       return
     }
+
+    // const nextPos = this.fakeMove()
+
     const sphere_ul_x = sphere.pos.x()
     const sphere_ul_y = sphere.pos.y()
     const sphere_lr_x = sphere_ul_x + sphere.size[0]
@@ -134,6 +149,10 @@ class Sphere {
       b_lr_x < sphere_ul_x ||
       sphere_lr_y < b_ul_y ||
       b_lr_y < sphere_ul_y
+
+    if (separate && this.bounceCheck === b.id) {
+      this.bounceCheck = null
+    }
 
     if (separate) return
 
@@ -162,8 +181,8 @@ class Sphere {
     cloneContext.drawImage(
       this.img,
       ...this.spriteCoordinates,
-      this.pos.x(),
-      this.pos.y(),
+      sphere.pos.x(),
+      sphere.pos.y(),
       ...this.size
     )
 
@@ -203,6 +222,12 @@ class Sphere {
       index += resolution
     ) {
       if (sphereImageData.data[index + 3] && bImageData.data[index + 3]) {
+        if (b.type === 'sphere') {
+          b.vel = b.vel.flip()
+          sphere.vel = sphere.vel.flip()
+          return
+        }
+
         if (b.type !== 'basket') {
           if (b.type === 'lever') sphere.vel = sphere.vel.multiply(0.93)
 
@@ -211,14 +236,45 @@ class Sphere {
           const dotProduct = sphere.vel.dotProduct(surfaceNormal)
           const bounceVector = surfaceNormal.multiply(-2 * dotProduct)
           sphere.vel = sphere.vel.add(bounceVector)
+
+          if (!this.bounceCheck || this.bounceCheck !== b.id) {
+            this.bounceCheck = b.id
+            this.game.bounce.play()
+          }
+
+          // on level surface and still going down
+          if (
+            b.type === 'lever' &&
+            b.rotation === 0 &&
+            sphere.pos.x() > b.pos.x() &&
+            sphere.pos.x() < b.pos.x() + b.size[0] &&
+            sphere.pos.y() > b.pos.y() - 10
+          ) {
+            sphere.vel = new Vector(sphere.vel.value[0], 0)
+            sphere.stuck = true
+          } else {
+            sphere.stuck = false
+          }
+
           break
         } else {
+          if (b.side === 'left') {
+            this.game.badBasketDrop.play()
+          } else {
+            this.game.goodBasketDrop.play()
+          }
           b.spheres[sphere.id] = sphere.id
           sphere.game.delete(sphere)
         }
       }
     }
   }
+
+  slide(slide) {
+    if (this.stuck) this.pos.value[0] += slide
+  }
 }
 
 export default Sphere
+
+// Playing cards in plastic container tilt, cards movement inside 3

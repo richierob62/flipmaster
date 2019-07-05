@@ -5,6 +5,7 @@ import Basket from './basket'
 import Constants from './constants'
 import GameHeader from './game_header'
 import Lever from './lever'
+import Sound from './sound'
 import StartButton from './start_button'
 import Timer from './timer'
 import Vector from './vector'
@@ -24,9 +25,16 @@ class Game {
     this.slide = 0
     this.slideDelta = Constants.SLIDE_DELTA
     this.timeElapsed = 0
+    this.leversChanged = 0
     this.winnerAnnounced = false
 
-    this.currentPlayer = 'humsn'
+    this.currentPlayer = 'human'
+
+    this.bounce = new Sound('./assets/sounds/bounce.mp3', 5, 0.3)
+    this.goodBasketDrop = new Sound('./assets/sounds/good_basket.mp3', 1, 0.5)
+    this.badBasketDrop = new Sound('./assets/sounds/bad_basket.mp3', 1, 0.5)
+    this.flip = new Sound('./assets/sounds/flip.mp3')
+    this.computerFlip = new Sound('./assets/sounds/computer_flip.mp3')
 
     this.update = this.update.bind(this)
     this.clearCanvas = this.clearCanvas.bind(this)
@@ -85,7 +93,7 @@ class Game {
     this.timeElapsed = 0
     this.winnerAnnounced = false
 
-    this.currentPlayer = 'humsn'
+    this.currentPlayer = 'human'
 
     this.addBaskets()
     this.buildLeftWall()
@@ -197,8 +205,11 @@ class Game {
   }
 
   addBall() {
-    const pos = new Vector(110 + Math.random() * 600, -10 - Math.random() * 500)
-    const vel = new Vector(-1 + Math.random() * 2, 0)
+    const pos = new Vector(
+      110 + this.slide + Math.random() * 600,
+      -10 - Math.random() * 100
+    )
+    const vel = new Vector(0, 0)
     this.addAsset(new Ball(this, pos, vel))
   }
 
@@ -270,6 +281,7 @@ class Game {
       window.clearInterval(this.switchTimer)
       this.computerPlay()
     } else {
+      this.leversChanged = 0
       this.switchTimer = window.setTimeout(
         this.switchToComputer,
         Constants.HUMAN_TIME
@@ -319,7 +331,12 @@ class Game {
       this.slideDelta = -1 * this.slideDelta
     }
     Object.values(this.gameAssets)
-      .filter(asset => asset.type === 'lever' || asset.type === 'bar')
+      .filter(
+        asset =>
+          asset.type === 'lever' ||
+          asset.type === 'bar' ||
+          asset.type === 'sphere'
+      )
       .forEach(asset => asset.slide(this.slideDelta))
     this.slide += this.slideDelta
   }
