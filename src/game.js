@@ -307,10 +307,10 @@ class Game {
       asset => asset.type === 'lever' && asset.rotation !== 45
     )
     let selected = []
-    if (levers.length <= Constants.NUMBER_CHANGED_BY_COMPUTER) {
+    if (levers.length <= this.leversChanged / 2 + 1) {
       selected = levers
     } else {
-      while (selected.length < Constants.NUMBER_CHANGED_BY_COMPUTER) {
+      while (selected.length < this.leversChanged / 2 + 1) {
         const random = levers[Math.floor(Math.random() * levers.length)]
         if (selected.indexOf(random) === -1) selected.push(random)
       }
@@ -323,6 +323,7 @@ class Game {
       }
     })
     this.currentPlayer = 'human'
+    this.leversChanged = 0
     this.startCycle()
   }
 

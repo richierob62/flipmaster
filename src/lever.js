@@ -1,4 +1,3 @@
-import Constants from './constants'
 import Vector from './vector'
 import { randomId } from './utils'
 import spriteMeta from '../public/assets/flipmaster_spritesheet'
@@ -60,8 +59,6 @@ class Lever {
   }
 
   handleClick(e) {
-    if (this.game.clickInProgress) return
-
     e.stopPropagation()
     const bbox_ul_x = this.pos.x()
     const bbox_ul_y = this.pos.y()
@@ -75,11 +72,7 @@ class Lever {
     if (bbox_ul_x <= x && bbox_lr_x >= x && bbox_ul_y <= y && bbox_lr_y >= y) {
       // this lever
 
-      if (this.game.leversChanged > Constants.NUMBER_CHANGED_BY_HUMAN) return
-
       this.game.leversChanged += 1
-      this.game.clickInProgress = this.id
-      console.log(this.game.leversChanged)
 
       if (this.rotation !== 0) {
         const { x, y, w, h } = spriteMeta['lever_2.png'].frame
@@ -105,7 +98,6 @@ class Lever {
       }
 
       this.game.flip.play()
-      this.game.clickInProgress = null
     }
   }
 
