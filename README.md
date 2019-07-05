@@ -1,6 +1,6 @@
 # flipmaster
 
-A vanilla javascript game where you play against the computer to collect the most balls
+A vanilla javascript (no libraries) game where you play against the computer to collect the most balls
 
 ## The Game
 
