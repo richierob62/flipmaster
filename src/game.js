@@ -1,14 +1,15 @@
-/* eslint-disable no-loop-func */
 import Ball from './sphere'
 import Bar from './bar'
 import Basket from './basket'
 import Constants from './constants'
 import GameHeader from './game_header'
+import Instructions from './instructions'
 import Lever from './lever'
 import Sound from './sound'
 import StartButton from './start_button'
 import Timer from './timer'
 import Vector from './vector'
+import WelcomeBackground from './welcome_bg'
 import Winner from './winner'
 
 class Game {
@@ -58,8 +59,10 @@ class Game {
 
     this.animFrame = window.requestAnimationFrame(this.update)
 
+    this.displayWelcomeBackground()
     this.displayGameHeader()
     this.displayStartButton()
+    this.displayInstructions()
   }
 
   clearCanvas() {
@@ -72,12 +75,22 @@ class Game {
   }
 
   displayStartButton() {
-    const pos = new Vector(250, 300)
+    const pos = new Vector(260, 500)
     this.addAsset(new StartButton(this, pos))
   }
 
+  displayWelcomeBackground() {
+    const pos = new Vector(50, 150)
+    this.addAsset(new WelcomeBackground(this, pos))
+  }
+
+  displayInstructions() {
+    const pos = new Vector(400, 275)
+    this.addAsset(new Instructions(this, pos))
+  }
+
   displayGameHeader() {
-    const pos = new Vector(10, 10)
+    const pos = new Vector(275, 180)
     this.addAsset(new GameHeader(this, pos))
   }
 
@@ -105,6 +118,7 @@ class Game {
     this.addTimer()
 
     this.addBall()
+
     this.ballAdder = window.setInterval(
       this.addBall,
       Constants.INTERVAL_BETWEEN_SPHERES
@@ -243,16 +257,10 @@ class Game {
 
   buildLevers() {
     this.addAsset(new Lever(this, new Vector(100, 100), 0))
-    // this.addAsset(new Lever(this, new Vector(200, 100), 0))
     this.addAsset(new Lever(this, new Vector(300, 100), 0))
-    // this.addAsset(new Lever(this, new Vector(400, 100), 0))
     this.addAsset(new Lever(this, new Vector(500, 100), 0))
-    // this.addAsset(new Lever(this, new Vector(600, 100), 0))
-    // this.addAsset(new Lever(this, new Vector(100, 200), 0))
     this.addAsset(new Lever(this, new Vector(200, 200), 0))
-    // this.addAsset(new Lever(this, new Vector(300, 200), 0))
     this.addAsset(new Lever(this, new Vector(400, 200), 0))
-    // this.addAsset(new Lever(this, new Vector(500, 200), 0))
     this.addAsset(new Lever(this, new Vector(600, 200), 0))
     this.addAsset(new Lever(this, new Vector(100, 300), 0))
     this.addAsset(new Lever(this, new Vector(200, 300), 0))
@@ -260,12 +268,8 @@ class Game {
     this.addAsset(new Lever(this, new Vector(400, 300), 0))
     this.addAsset(new Lever(this, new Vector(500, 300), 0))
     this.addAsset(new Lever(this, new Vector(600, 300), 0))
-    // this.addAsset(new Lever(this, new Vector(100, 400), 0))
-    // this.addAsset(new Lever(this, new Vector(200, 400), 0))
     this.addAsset(new Lever(this, new Vector(300, 400), 0))
     this.addAsset(new Lever(this, new Vector(400, 400), 0))
-    // this.addAsset(new Lever(this, new Vector(500, 400), 0))
-    // this.addAsset(new Lever(this, new Vector(600, 400), 0))
     this.addAsset(new Lever(this, new Vector(100, 500), 0))
     this.addAsset(new Lever(this, new Vector(200, 500), 0))
     this.addAsset(new Lever(this, new Vector(300, 500), 0))
