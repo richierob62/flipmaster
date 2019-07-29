@@ -13,7 +13,7 @@ class GameHeader {
     this.pos = pos
 
     this.img = new Image()
-    this.img.src = './assets/flipmaster_spritesheet.png'
+    this.img.src = this.game.spriteSheet
 
     const { x, y, w, h } = spriteMeta['game_header.png'].frame
 

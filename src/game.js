@@ -17,6 +17,8 @@ class Game {
     this.canvas = canvas
     this.ctx = canvas.getContext('2d')
 
+    this.spriteSheet = './assets/flipmaster_spritesheet.png'
+
     this.gameAssets = {}
     this.lowerLeft = {}
     this.lowerRight = {}
@@ -51,18 +53,61 @@ class Game {
     this.start = this.start.bind(this)
     this.emptyBaskets = this.emptyBaskets.bind(this)
     this.resetLevers = this.resetLevers.bind(this)
+    this.displayWelcomeBackground = this.displayWelcomeBackground.bind(this)
+    this.displayGameHeader = this.displayGameHeader.bind(this)
+    this.displayStartButton = this.displayStartButton.bind(this)
+    this.displayInstructions = this.displayInstructions.bind(this)
+    this.addBaskets = this.addBaskets.bind(this)
+    this.buildLeftWall = this.buildLeftWall.bind(this)
+    this.buildRightWall = this.buildRightWall.bind(this)
+    this.buildLevers = this.buildLevers.bind(this)
 
+    this.animFrame = window.requestAnimationFrame(this.update)
+
+    this.displayStaticGameAssets()
+    this.displayWelcomePage()
+  }
+
+  displayStaticGameAssets() {
     this.addBaskets()
     this.buildLeftWall()
     this.buildRightWall()
     this.buildLevers()
+  }
 
-    this.animFrame = window.requestAnimationFrame(this.update)
-
+  displayWelcomePage() {
     this.displayWelcomeBackground()
     this.displayGameHeader()
     this.displayStartButton()
     this.displayInstructions()
+  }
+
+  displayWelcomeBackground() {
+    const pos = new Vector(50, 150)
+    this.addAsset(new WelcomeBackground(this, pos))
+  }
+
+  displayGameHeader() {
+    const pos = new Vector(275, 180)
+    this.addAsset(new GameHeader(this, pos))
+  }
+
+  displayStartButton() {
+    const pos = new Vector(260, 640)
+    this.addAsset(new StartButton(this, pos))
+  }
+
+  displayInstructions() {
+    const pos = new Vector(400, 275)
+    this.addAsset(new Instructions(this, pos))
+  }
+
+  update() {
+    this.clearCanvas()
+    this.slideFrame()
+    Object.values(this.gameAssets).forEach(asset => asset.update(this.ctx))
+    this.animFrame = window.requestAnimationFrame(this.update)
+    this.checkForWin()
   }
 
   clearCanvas() {
@@ -74,25 +119,7 @@ class Game {
     this.ctx.fillRect(0, 0, 800, 800)
   }
 
-  displayStartButton() {
-    const pos = new Vector(260, 500)
-    this.addAsset(new StartButton(this, pos))
-  }
-
-  displayWelcomeBackground() {
-    const pos = new Vector(50, 150)
-    this.addAsset(new WelcomeBackground(this, pos))
-  }
-
-  displayInstructions() {
-    const pos = new Vector(400, 275)
-    this.addAsset(new Instructions(this, pos))
-  }
-
-  displayGameHeader() {
-    const pos = new Vector(275, 180)
-    this.addAsset(new GameHeader(this, pos))
-  }
+  ///////////////////
 
   start() {
     this.gameAssets = {}
@@ -169,14 +196,6 @@ class Game {
       asset => asset.type === 'start_btn'
     )[0]
     if (btn) delete this.gameAssets[btn.id]
-  }
-
-  update() {
-    this.clearCanvas()
-    this.slideFrame()
-    Object.values(this.gameAssets).forEach(asset => asset.update(this.ctx))
-    this.animFrame = window.requestAnimationFrame(this.update)
-    this.checkForWin()
   }
 
   checkForWin() {

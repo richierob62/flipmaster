@@ -14,7 +14,7 @@ class Winner {
     this.win = win
 
     this.img = new Image()
-    this.img.src = './assets/flipmaster_spritesheet.png'
+    this.img.src = this.game.spriteSheet
 
     if (this.win) {
       const { x, y, w, h } = spriteMeta['you_won.jpg'].frame

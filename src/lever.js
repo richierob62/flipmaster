@@ -15,9 +15,10 @@ class Lever {
     this.diagonalAdjustment = -25
 
     this.img = new Image()
-    this.img.src = './assets/flipmaster_spritesheet.png'
+    this.img.src = this.game.spriteSheet
+
     if (rotation === 45) {
-      const { x, y, w, h } = spriteMeta['lever_2.png'].frame
+      const { x, y, w, h } = spriteMeta['lever_45.png'].frame
       this.spriteCoordinates = [x, y, w, h]
       this.size = [w, h]
       this.pos.value[1] += this.diagonalAdjustment

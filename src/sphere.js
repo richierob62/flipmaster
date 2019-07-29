@@ -21,7 +21,7 @@ class Sphere {
     this.bounceCheck = null
 
     this.img = new Image()
-    this.img.src = './assets/flipmaster_spritesheet.png'
+    this.img.src = this.game.spriteSheet
 
     const { x, y, w, h } = spriteMeta['sphere.png'].frame
     this.spriteCoordinates = [x, y, w, h]

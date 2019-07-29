@@ -11,7 +11,8 @@ class StartButton {
     this.pos = pos
 
     this.img = new Image()
-    this.img.src = './assets/flipmaster_spritesheet.png'
+    this.img.src = this.game.spriteSheet
+
     const { x, y, w, h } = spriteMeta['start.png'].frame
     this.spriteCoordinates = [x, y, w, h]
     this.size = [w, h]

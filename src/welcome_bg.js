@@ -17,7 +17,7 @@ class WelcomeBackground {
 
   draw(ctx) {
     ctx.fillStyle = '#222'
-    ctx.fillRect(this.pos.x(), this.pos.y(), 700, 500)
+    ctx.fillRect(this.pos.x(), this.pos.y(), 700, 600)
   }
 
   slide(slide) {
