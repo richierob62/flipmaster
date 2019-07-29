@@ -204,7 +204,7 @@ class Bar {
     }
 
     this.img = new Image()
-    this.img.src = './assets/flipmaster_spritesheet.png'
+    this.img.src = this.game.spriteSheet
 
     const { x, y, w, h } = _public_assets_flipmaster_spritesheet__WEBPACK_IMPORTED_MODULE_2__["default"]['bar.png'].frame
 
@@ -266,7 +266,7 @@ class Basket {
     this.spheres = {}
 
     this.img = new Image()
-    this.img.src = './assets/flipmaster_spritesheet.png'
+    this.img.src = this.game.spriteSheet
 
     const { x, y, w, h } = _public_assets_flipmaster_spritesheet__WEBPACK_IMPORTED_MODULE_1__["default"]['basket.png'].frame
 
@@ -389,13 +389,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _basket__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./basket */ "./src/basket.js");
 /* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./constants */ "./src/constants.js");
 /* harmony import */ var _game_header__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./game_header */ "./src/game_header.js");
-/* harmony import */ var _lever__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./lever */ "./src/lever.js");
-/* harmony import */ var _sound__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./sound */ "./src/sound.js");
-/* harmony import */ var _start_button__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./start_button */ "./src/start_button.js");
-/* harmony import */ var _timer__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./timer */ "./src/timer.js");
-/* harmony import */ var _vector__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./vector */ "./src/vector.js");
-/* harmony import */ var _winner__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./winner */ "./src/winner.js");
-/* eslint-disable no-loop-func */
+/* harmony import */ var _instructions__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./instructions */ "./src/instructions.js");
+/* harmony import */ var _lever__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./lever */ "./src/lever.js");
+/* harmony import */ var _sound__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./sound */ "./src/sound.js");
+/* harmony import */ var _start_button__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./start_button */ "./src/start_button.js");
+/* harmony import */ var _timer__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./timer */ "./src/timer.js");
+/* harmony import */ var _vector__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./vector */ "./src/vector.js");
+/* harmony import */ var _welcome_bg__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./welcome_bg */ "./src/welcome_bg.js");
+/* harmony import */ var _winner__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./winner */ "./src/winner.js");
+
+
 
 
 
@@ -413,6 +416,8 @@ class Game {
     this.canvas = canvas
     this.ctx = canvas.getContext('2d')
 
+    this.spriteSheet = './assets/flipmaster_spritesheet.png'
+
     this.gameAssets = {}
     this.lowerLeft = {}
     this.lowerRight = {}
@@ -427,11 +432,11 @@ class Game {
 
     this.currentPlayer = 'human'
 
-    this.bounce = new _sound__WEBPACK_IMPORTED_MODULE_6__["default"]('./assets/sounds/bounce.mp3', 5, 0.3)
-    this.goodBasketDrop = new _sound__WEBPACK_IMPORTED_MODULE_6__["default"]('./assets/sounds/good_basket.mp3', 1, 0.5)
-    this.badBasketDrop = new _sound__WEBPACK_IMPORTED_MODULE_6__["default"]('./assets/sounds/bad_basket.mp3', 1, 0.5)
-    this.flip = new _sound__WEBPACK_IMPORTED_MODULE_6__["default"]('./assets/sounds/flip.mp3')
-    this.computerFlip = new _sound__WEBPACK_IMPORTED_MODULE_6__["default"]('./assets/sounds/computer_flip.mp3')
+    this.bounce = new _sound__WEBPACK_IMPORTED_MODULE_7__["default"]('./assets/sounds/bounce.mp3', 5, 0.3)
+    this.goodBasketDrop = new _sound__WEBPACK_IMPORTED_MODULE_7__["default"]('./assets/sounds/good_basket.mp3', 1, 0.5)
+    this.badBasketDrop = new _sound__WEBPACK_IMPORTED_MODULE_7__["default"]('./assets/sounds/bad_basket.mp3', 1, 0.5)
+    this.flip = new _sound__WEBPACK_IMPORTED_MODULE_7__["default"]('./assets/sounds/flip.mp3')
+    this.computerFlip = new _sound__WEBPACK_IMPORTED_MODULE_7__["default"]('./assets/sounds/computer_flip.mp3')
 
     this.update = this.update.bind(this)
     this.clearCanvas = this.clearCanvas.bind(this)
@@ -447,16 +452,61 @@ class Game {
     this.start = this.start.bind(this)
     this.emptyBaskets = this.emptyBaskets.bind(this)
     this.resetLevers = this.resetLevers.bind(this)
+    this.displayWelcomeBackground = this.displayWelcomeBackground.bind(this)
+    this.displayGameHeader = this.displayGameHeader.bind(this)
+    this.displayStartButton = this.displayStartButton.bind(this)
+    this.displayInstructions = this.displayInstructions.bind(this)
+    this.addBaskets = this.addBaskets.bind(this)
+    this.buildLeftWall = this.buildLeftWall.bind(this)
+    this.buildRightWall = this.buildRightWall.bind(this)
+    this.buildLevers = this.buildLevers.bind(this)
 
+    this.animFrame = window.requestAnimationFrame(this.update)
+
+    this.displayStaticGameAssets()
+    this.displayWelcomePage()
+  }
+
+  displayStaticGameAssets() {
     this.addBaskets()
     this.buildLeftWall()
     this.buildRightWall()
     this.buildLevers()
+  }
 
-    this.animFrame = window.requestAnimationFrame(this.update)
-
+  displayWelcomePage() {
+    this.displayWelcomeBackground()
     this.displayGameHeader()
     this.displayStartButton()
+    this.displayInstructions()
+  }
+
+  displayWelcomeBackground() {
+    const pos = new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](50, 150)
+    this.addAsset(new _welcome_bg__WEBPACK_IMPORTED_MODULE_11__["default"](this, pos))
+  }
+
+  displayGameHeader() {
+    const pos = new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](275, 180)
+    this.addAsset(new _game_header__WEBPACK_IMPORTED_MODULE_4__["default"](this, pos))
+  }
+
+  displayStartButton() {
+    const pos = new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](260, 640)
+    this.addAsset(new _start_button__WEBPACK_IMPORTED_MODULE_8__["default"](this, pos))
+  }
+
+  displayInstructions() {
+    const pos = new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](400, 275)
+    this.addAsset(new _instructions__WEBPACK_IMPORTED_MODULE_5__["default"](this, pos))
+  }
+
+  update() {
+    this.clearCanvas()
+    this.slideFrame()
+    Object.values(this.gameAssets).forEach(asset => asset.update(this.ctx))
+    this.animFrame = window.requestAnimationFrame(this.update)
+    this.checkForWin()
   }
 
   clearCanvas() {
@@ -468,15 +518,7 @@ class Game {
     this.ctx.fillRect(0, 0, 800, 800)
   }
 
-  displayStartButton() {
-    const pos = new _vector__WEBPACK_IMPORTED_MODULE_9__["default"](250, 300)
-    this.addAsset(new _start_button__WEBPACK_IMPORTED_MODULE_7__["default"](this, pos))
-  }
-
-  displayGameHeader() {
-    const pos = new _vector__WEBPACK_IMPORTED_MODULE_9__["default"](10, 10)
-    this.addAsset(new _game_header__WEBPACK_IMPORTED_MODULE_4__["default"](this, pos))
-  }
+  ///////////////////
 
   start() {
     this.gameAssets = {}
@@ -502,6 +544,7 @@ class Game {
     this.addTimer()
 
     this.addBall()
+
     this.ballAdder = window.setInterval(
       this.addBall,
       _constants__WEBPACK_IMPORTED_MODULE_3__["default"].INTERVAL_BETWEEN_SPHERES
@@ -554,14 +597,6 @@ class Game {
     if (btn) delete this.gameAssets[btn.id]
   }
 
-  update() {
-    this.clearCanvas()
-    this.slideFrame()
-    Object.values(this.gameAssets).forEach(asset => asset.update(this.ctx))
-    this.animFrame = window.requestAnimationFrame(this.update)
-    this.checkForWin()
-  }
-
   checkForWin() {
     const basket = Object.values(this.gameAssets).filter(
       asset =>
@@ -571,8 +606,8 @@ class Game {
       const win = basket[0].side === 'right'
       if (!this.winnerAnnounced) {
         this.winnerAnnounced = true
-        const pos = new _vector__WEBPACK_IMPORTED_MODULE_9__["default"](50, 200)
-        this.addAsset(new _winner__WEBPACK_IMPORTED_MODULE_10__["default"](this, pos, win))
+        const pos = new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](50, 200)
+        this.addAsset(new _winner__WEBPACK_IMPORTED_MODULE_12__["default"](this, pos, win))
         this.stop()
       }
     }
@@ -602,73 +637,63 @@ class Game {
   }
 
   addBall() {
-    const pos = new _vector__WEBPACK_IMPORTED_MODULE_9__["default"](
+    const pos = new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](
       110 + this.slide + Math.random() * 600,
       -10 - Math.random() * 100
     )
-    const vel = new _vector__WEBPACK_IMPORTED_MODULE_9__["default"](0, 0)
+    const vel = new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](0, 0)
     this.addAsset(new _sphere__WEBPACK_IMPORTED_MODULE_0__["default"](this, pos, vel))
   }
 
   addTimer() {
-    const pos = new _vector__WEBPACK_IMPORTED_MODULE_9__["default"](400, 730)
-    this.addAsset(new _timer__WEBPACK_IMPORTED_MODULE_8__["default"](this, pos))
+    const pos = new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](400, 730)
+    this.addAsset(new _timer__WEBPACK_IMPORTED_MODULE_9__["default"](this, pos))
   }
 
   addBaskets() {
-    this.addAsset(new _basket__WEBPACK_IMPORTED_MODULE_2__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_9__["default"](100, 650), 'left'))
-    this.addAsset(new _basket__WEBPACK_IMPORTED_MODULE_2__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_9__["default"](410, 650), 'right'))
+    this.addAsset(new _basket__WEBPACK_IMPORTED_MODULE_2__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](100, 650), 'left'))
+    this.addAsset(new _basket__WEBPACK_IMPORTED_MODULE_2__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](410, 650), 'right'))
   }
 
   buildLeftWall() {
-    this.addAsset(new _bar__WEBPACK_IMPORTED_MODULE_1__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_9__["default"](85, 50), 'right'))
-    this.addAsset(new _bar__WEBPACK_IMPORTED_MODULE_1__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_9__["default"](85, 150), 'right'))
-    this.addAsset(new _bar__WEBPACK_IMPORTED_MODULE_1__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_9__["default"](85, 250), 'right'))
-    this.addAsset(new _bar__WEBPACK_IMPORTED_MODULE_1__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_9__["default"](85, 350), 'right'))
-    this.addAsset(new _bar__WEBPACK_IMPORTED_MODULE_1__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_9__["default"](85, 450), 'right'))
-    this.addAsset(new _bar__WEBPACK_IMPORTED_MODULE_1__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_9__["default"](85, 550), 'right'))
+    this.addAsset(new _bar__WEBPACK_IMPORTED_MODULE_1__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](85, 50), 'right'))
+    this.addAsset(new _bar__WEBPACK_IMPORTED_MODULE_1__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](85, 150), 'right'))
+    this.addAsset(new _bar__WEBPACK_IMPORTED_MODULE_1__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](85, 250), 'right'))
+    this.addAsset(new _bar__WEBPACK_IMPORTED_MODULE_1__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](85, 350), 'right'))
+    this.addAsset(new _bar__WEBPACK_IMPORTED_MODULE_1__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](85, 450), 'right'))
+    this.addAsset(new _bar__WEBPACK_IMPORTED_MODULE_1__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](85, 550), 'right'))
   }
 
   buildRightWall() {
-    this.addAsset(new _bar__WEBPACK_IMPORTED_MODULE_1__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_9__["default"](700, 50), 'left'))
-    this.addAsset(new _bar__WEBPACK_IMPORTED_MODULE_1__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_9__["default"](700, 150), 'left'))
-    this.addAsset(new _bar__WEBPACK_IMPORTED_MODULE_1__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_9__["default"](700, 250), 'left'))
-    this.addAsset(new _bar__WEBPACK_IMPORTED_MODULE_1__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_9__["default"](700, 350), 'left'))
-    this.addAsset(new _bar__WEBPACK_IMPORTED_MODULE_1__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_9__["default"](700, 450), 'left'))
-    this.addAsset(new _bar__WEBPACK_IMPORTED_MODULE_1__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_9__["default"](700, 550), 'left'))
+    this.addAsset(new _bar__WEBPACK_IMPORTED_MODULE_1__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](700, 50), 'left'))
+    this.addAsset(new _bar__WEBPACK_IMPORTED_MODULE_1__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](700, 150), 'left'))
+    this.addAsset(new _bar__WEBPACK_IMPORTED_MODULE_1__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](700, 250), 'left'))
+    this.addAsset(new _bar__WEBPACK_IMPORTED_MODULE_1__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](700, 350), 'left'))
+    this.addAsset(new _bar__WEBPACK_IMPORTED_MODULE_1__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](700, 450), 'left'))
+    this.addAsset(new _bar__WEBPACK_IMPORTED_MODULE_1__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](700, 550), 'left'))
   }
 
   buildLevers() {
-    this.addAsset(new _lever__WEBPACK_IMPORTED_MODULE_5__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_9__["default"](100, 100), 0))
-    // this.addAsset(new Lever(this, new Vector(200, 100), 0))
-    this.addAsset(new _lever__WEBPACK_IMPORTED_MODULE_5__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_9__["default"](300, 100), 0))
-    // this.addAsset(new Lever(this, new Vector(400, 100), 0))
-    this.addAsset(new _lever__WEBPACK_IMPORTED_MODULE_5__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_9__["default"](500, 100), 0))
-    // this.addAsset(new Lever(this, new Vector(600, 100), 0))
-    // this.addAsset(new Lever(this, new Vector(100, 200), 0))
-    this.addAsset(new _lever__WEBPACK_IMPORTED_MODULE_5__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_9__["default"](200, 200), 0))
-    // this.addAsset(new Lever(this, new Vector(300, 200), 0))
-    this.addAsset(new _lever__WEBPACK_IMPORTED_MODULE_5__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_9__["default"](400, 200), 0))
-    // this.addAsset(new Lever(this, new Vector(500, 200), 0))
-    this.addAsset(new _lever__WEBPACK_IMPORTED_MODULE_5__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_9__["default"](600, 200), 0))
-    this.addAsset(new _lever__WEBPACK_IMPORTED_MODULE_5__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_9__["default"](100, 300), 0))
-    this.addAsset(new _lever__WEBPACK_IMPORTED_MODULE_5__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_9__["default"](200, 300), 0))
-    this.addAsset(new _lever__WEBPACK_IMPORTED_MODULE_5__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_9__["default"](300, 300), 0))
-    this.addAsset(new _lever__WEBPACK_IMPORTED_MODULE_5__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_9__["default"](400, 300), 0))
-    this.addAsset(new _lever__WEBPACK_IMPORTED_MODULE_5__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_9__["default"](500, 300), 0))
-    this.addAsset(new _lever__WEBPACK_IMPORTED_MODULE_5__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_9__["default"](600, 300), 0))
-    // this.addAsset(new Lever(this, new Vector(100, 400), 0))
-    // this.addAsset(new Lever(this, new Vector(200, 400), 0))
-    this.addAsset(new _lever__WEBPACK_IMPORTED_MODULE_5__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_9__["default"](300, 400), 0))
-    this.addAsset(new _lever__WEBPACK_IMPORTED_MODULE_5__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_9__["default"](400, 400), 0))
-    // this.addAsset(new Lever(this, new Vector(500, 400), 0))
-    // this.addAsset(new Lever(this, new Vector(600, 400), 0))
-    this.addAsset(new _lever__WEBPACK_IMPORTED_MODULE_5__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_9__["default"](100, 500), 0))
-    this.addAsset(new _lever__WEBPACK_IMPORTED_MODULE_5__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_9__["default"](200, 500), 0))
-    this.addAsset(new _lever__WEBPACK_IMPORTED_MODULE_5__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_9__["default"](300, 500), 0))
-    this.addAsset(new _lever__WEBPACK_IMPORTED_MODULE_5__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_9__["default"](400, 500), 0))
-    this.addAsset(new _lever__WEBPACK_IMPORTED_MODULE_5__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_9__["default"](500, 500), 0))
-    this.addAsset(new _lever__WEBPACK_IMPORTED_MODULE_5__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_9__["default"](600, 500), 0))
+    this.addAsset(new _lever__WEBPACK_IMPORTED_MODULE_6__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](100, 100), 0))
+    this.addAsset(new _lever__WEBPACK_IMPORTED_MODULE_6__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](300, 100), 0))
+    this.addAsset(new _lever__WEBPACK_IMPORTED_MODULE_6__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](500, 100), 0))
+    this.addAsset(new _lever__WEBPACK_IMPORTED_MODULE_6__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](200, 200), 0))
+    this.addAsset(new _lever__WEBPACK_IMPORTED_MODULE_6__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](400, 200), 0))
+    this.addAsset(new _lever__WEBPACK_IMPORTED_MODULE_6__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](600, 200), 0))
+    this.addAsset(new _lever__WEBPACK_IMPORTED_MODULE_6__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](100, 300), 0))
+    this.addAsset(new _lever__WEBPACK_IMPORTED_MODULE_6__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](200, 300), 0))
+    this.addAsset(new _lever__WEBPACK_IMPORTED_MODULE_6__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](300, 300), 0))
+    this.addAsset(new _lever__WEBPACK_IMPORTED_MODULE_6__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](400, 300), 0))
+    this.addAsset(new _lever__WEBPACK_IMPORTED_MODULE_6__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](500, 300), 0))
+    this.addAsset(new _lever__WEBPACK_IMPORTED_MODULE_6__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](600, 300), 0))
+    this.addAsset(new _lever__WEBPACK_IMPORTED_MODULE_6__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](300, 400), 0))
+    this.addAsset(new _lever__WEBPACK_IMPORTED_MODULE_6__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](400, 400), 0))
+    this.addAsset(new _lever__WEBPACK_IMPORTED_MODULE_6__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](100, 500), 0))
+    this.addAsset(new _lever__WEBPACK_IMPORTED_MODULE_6__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](200, 500), 0))
+    this.addAsset(new _lever__WEBPACK_IMPORTED_MODULE_6__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](300, 500), 0))
+    this.addAsset(new _lever__WEBPACK_IMPORTED_MODULE_6__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](400, 500), 0))
+    this.addAsset(new _lever__WEBPACK_IMPORTED_MODULE_6__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](500, 500), 0))
+    this.addAsset(new _lever__WEBPACK_IMPORTED_MODULE_6__["default"](this, new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](600, 500), 0))
   }
 
   startCycle() {
@@ -771,7 +796,7 @@ class GameHeader {
     this.pos = pos
 
     this.img = new Image()
-    this.img.src = './assets/flipmaster_spritesheet.png'
+    this.img.src = this.game.spriteSheet
 
     const { x, y, w, h } = _public_assets_flipmaster_spritesheet__WEBPACK_IMPORTED_MODULE_1__["default"]['game_header.png'].frame
 
@@ -821,6 +846,206 @@ window.addEventListener('DOMContentLoaded', event => {
 
 /***/ }),
 
+/***/ "./src/instructions.js":
+/*!*****************************!*\
+  !*** ./src/instructions.js ***!
+  \*****************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _vector__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./vector */ "./src/vector.js");
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utils */ "./src/utils.js");
+/* harmony import */ var _public_assets_flipmaster_spritesheet__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../public/assets/flipmaster_spritesheet */ "./public/assets/flipmaster_spritesheet.js");
+
+
+
+
+class Instructions {
+  constructor(game, pos) {
+    this.type = 'instructions'
+
+    this.id = Object(_utils__WEBPACK_IMPORTED_MODULE_1__["randomId"])()
+    this.game = game
+    this.pos = pos
+
+    this.draw = this.draw.bind(this)
+    this.wrapText = this.wrapText.bind(this)
+  }
+
+  update(ctx) {
+    this.draw(ctx)
+  }
+
+  line_1(ctx) {
+    ctx.font = '25px Comic Sans MS'
+    ctx.fillStyle = 'white'
+    ctx.textAlign = 'center'
+    this.wrapText(
+      ctx,
+      "Let's Play Flipmaster!",
+      this.pos.x(),
+      this.pos.y(),
+      500,
+      35
+    )
+  }
+
+  line_2(ctx) {
+    ctx.font = '15px Comic Sans MS'
+    this.wrapText(
+      ctx,
+      `You job is to get more balls falling into your basket (green) than fall into the other (red) one.  First to collect 20 balls wins! `,
+      this.pos.x(),
+      this.pos.y() + 35,
+      500,
+      25
+    )
+  }
+
+  squishy(ctx) {
+    const squishy = new Image()
+    squishy.src = this.game.spriteSheet
+    let { x, y, w, h } = _public_assets_flipmaster_spritesheet__WEBPACK_IMPORTED_MODULE_2__["default"]['lever_2.png'].frame
+    let spriteCoordinates = [x, y, w, h]
+    let size = [w, h]
+    ctx.drawImage(
+      squishy,
+      ...spriteCoordinates,
+      this.pos.x() - 320,
+      this.pos.y() + 100,
+      ...size
+    )
+  }
+
+  line_3(ctx) {
+    ctx.textAlign = 'left'
+    ctx.font = '20px Comic Sans MS'
+    this.wrapText(
+      ctx,
+      `Sticky Pads trap spheres and slow them down..`,
+      this.pos.x() - 200,
+      this.pos.y() + 120,
+      500,
+      25
+    )
+  }
+
+  line_4(ctx) {
+    ctx.textAlign = 'left'
+    ctx.font = '20px Comic Sans MS'
+    this.wrapText(
+      ctx,
+      `Click them on the left side to get a`,
+      this.pos.x() - 200,
+      this.pos.y() + 175,
+      500,
+      25
+    )
+  }
+
+  fortyfive(ctx) {
+    const fortyfive = new Image()
+    fortyfive.src = this.game.spriteSheet
+    let { x, y, w, h } = _public_assets_flipmaster_spritesheet__WEBPACK_IMPORTED_MODULE_2__["default"]['lever_45.png'].frame
+    let spriteCoordinates = [x, y, w, h]
+    let size = [w, h]
+    ctx.drawImage(
+      fortyfive,
+      ...spriteCoordinates,
+      this.pos.x() + 150,
+      this.pos.y() + 130,
+      ...size
+    )
+  }
+
+  line_5(ctx) {
+    ctx.textAlign = 'left'
+    ctx.font = '20px Comic Sans MS'
+    this.wrapText(
+      ctx,
+      `and on the right side to get a`,
+      this.pos.x() - 300,
+      this.pos.y() + 240,
+      500,
+      25
+    )
+  }
+
+  negfortyfive(ctx) {
+    const lever_neg45 = new Image()
+    lever_neg45.src = this.game.spriteSheet
+    let { x, y, w, h } = _public_assets_flipmaster_spritesheet__WEBPACK_IMPORTED_MODULE_2__["default"]['lever_neg45.png'].frame
+    let spriteCoordinates = [x, y, w, h]
+    let size = [w, h]
+    ctx.drawImage(
+      lever_neg45,
+      ...spriteCoordinates,
+      this.pos.x(),
+      this.pos.y() + 190,
+      ...size
+    )
+  }
+
+  line_6(ctx) {
+    ctx.textAlign = 'left'
+    ctx.font = '20px Comic Sans MS'
+    this.wrapText(
+      ctx,
+      `BUT... There's a catch.  Each time the timer resets, the computer will flip ONE MORE than you did on your last turn.`,
+      this.pos.x() - 300,
+      this.pos.y() + 320,
+      600,
+      25
+    )
+  }
+
+  draw(ctx) {
+    this.line_1(ctx)
+    this.line_2(ctx)
+    this.squishy(ctx)
+    this.line_3(ctx)
+    this.line_4(ctx)
+    this.fortyfive(ctx)
+    this.line_5(ctx)
+    this.negfortyfive(ctx)
+    this.line_6(ctx)
+  }
+
+  wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+    const words = text.split(' ')
+    const lines = []
+    let idx = 0
+    words.forEach(word => {
+      if (!lines[idx]) {
+        lines[idx] = word
+      } else {
+        const dimData = ctx.measureText(lines[idx] + ' ' + word)
+        if (dimData.width <= maxWidth) {
+          lines[idx] += ' ' + word
+        } else {
+          idx++
+          lines[idx] = word
+        }
+      }
+    })
+    lines.forEach(line => {
+      ctx.fillText(line, x, y)
+      y += lineHeight
+    })
+  }
+
+  slide(slide) {
+    //
+  }
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (Instructions);
+
+
+/***/ }),
+
 /***/ "./src/lever.js":
 /*!**********************!*\
   !*** ./src/lever.js ***!
@@ -850,9 +1075,10 @@ class Lever {
     this.diagonalAdjustment = -25
 
     this.img = new Image()
-    this.img.src = './assets/flipmaster_spritesheet.png'
+    this.img.src = this.game.spriteSheet
+
     if (rotation === 45) {
-      const { x, y, w, h } = _public_assets_flipmaster_spritesheet__WEBPACK_IMPORTED_MODULE_2__["default"]['lever_2.png'].frame
+      const { x, y, w, h } = _public_assets_flipmaster_spritesheet__WEBPACK_IMPORTED_MODULE_2__["default"]['lever_45.png'].frame
       this.spriteCoordinates = [x, y, w, h]
       this.size = [w, h]
       this.pos.value[1] += this.diagonalAdjustment
@@ -1035,7 +1261,7 @@ class Sphere {
     this.bounceCheck = null
 
     this.img = new Image()
-    this.img.src = './assets/flipmaster_spritesheet.png'
+    this.img.src = this.game.spriteSheet
 
     const { x, y, w, h } = _public_assets_flipmaster_spritesheet__WEBPACK_IMPORTED_MODULE_4__["default"]['sphere.png'].frame
     this.spriteCoordinates = [x, y, w, h]
@@ -1321,7 +1547,8 @@ class StartButton {
     this.pos = pos
 
     this.img = new Image()
-    this.img.src = './assets/flipmaster_spritesheet.png'
+    this.img.src = this.game.spriteSheet
+
     const { x, y, w, h } = _public_assets_flipmaster_spritesheet__WEBPACK_IMPORTED_MODULE_2__["default"]['start.png'].frame
     this.spriteCoordinates = [x, y, w, h]
     this.size = [w, h]
@@ -1524,6 +1751,48 @@ class Vector {
 
 /***/ }),
 
+/***/ "./src/welcome_bg.js":
+/*!***************************!*\
+  !*** ./src/welcome_bg.js ***!
+  \***************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils */ "./src/utils.js");
+
+
+class WelcomeBackground {
+  constructor(game, pos) {
+    this.type = 'welcome_bg'
+
+    this.id = Object(_utils__WEBPACK_IMPORTED_MODULE_0__["randomId"])()
+    this.game = game
+    this.pos = pos
+
+    this.draw = this.draw.bind(this)
+  }
+
+  update(ctx) {
+    this.draw(ctx)
+  }
+
+  draw(ctx) {
+    ctx.fillStyle = '#222'
+    ctx.fillRect(this.pos.x(), this.pos.y(), 700, 600)
+  }
+
+  slide(slide) {
+    //
+  }
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (WelcomeBackground);
+
+
+/***/ }),
+
 /***/ "./src/winner.js":
 /*!***********************!*\
   !*** ./src/winner.js ***!
@@ -1551,7 +1820,7 @@ class Winner {
     this.win = win
 
     this.img = new Image()
-    this.img.src = './assets/flipmaster_spritesheet.png'
+    this.img.src = this.game.spriteSheet
 
     if (this.win) {
       const { x, y, w, h } = _public_assets_flipmaster_spritesheet__WEBPACK_IMPORTED_MODULE_1__["default"]['you_won.jpg'].frame
