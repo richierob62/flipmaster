@@ -482,12 +482,12 @@ class Game {
   }
 
   displayWelcomeBackground() {
-    const pos = new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](50, 150)
+    const pos = new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](50, 125)
     this.addAsset(new _welcome_bg__WEBPACK_IMPORTED_MODULE_11__["default"](this, pos))
   }
 
   displayGameHeader() {
-    const pos = new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](275, 180)
+    const pos = new _vector__WEBPACK_IMPORTED_MODULE_10__["default"](275, 150)
     this.addAsset(new _game_header__WEBPACK_IMPORTED_MODULE_4__["default"](this, pos))
   }
 
@@ -817,6 +817,15 @@ class GameHeader {
       this.pos.x(),
       this.pos.y(),
       ...this.size
+    )
+
+    ctx.font = '15px Comic Sans MS'
+    ctx.fillStyle = 'white'
+    ctx.textAlign = 'center'
+    ctx.fillText(
+      'by Richard Robinson (github: https://github.com/richierob62)',
+      this.pos.x() + 120,
+      this.pos.y() + 65
     )
   }
 }
@@ -1780,7 +1789,7 @@ class WelcomeBackground {
 
   draw(ctx) {
     ctx.fillStyle = '#222'
-    ctx.fillRect(this.pos.x(), this.pos.y(), 700, 600)
+    ctx.fillRect(this.pos.x(), this.pos.y(), 700, 630)
   }
 
   slide(slide) {

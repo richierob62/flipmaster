@@ -35,6 +35,15 @@ class GameHeader {
       this.pos.y(),
       ...this.size
     )
+
+    ctx.font = '15px Comic Sans MS'
+    ctx.fillStyle = 'white'
+    ctx.textAlign = 'center'
+    ctx.fillText(
+      'by Richard Robinson (github: https://github.com/richierob62)',
+      this.pos.x() + 120,
+      this.pos.y() + 65
+    )
   }
 }
 

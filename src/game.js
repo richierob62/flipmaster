@@ -83,12 +83,12 @@ class Game {
   }
 
   displayWelcomeBackground() {
-    const pos = new Vector(50, 150)
+    const pos = new Vector(50, 125)
     this.addAsset(new WelcomeBackground(this, pos))
   }
 
   displayGameHeader() {
-    const pos = new Vector(275, 180)
+    const pos = new Vector(275, 150)
     this.addAsset(new GameHeader(this, pos))
   }
 
